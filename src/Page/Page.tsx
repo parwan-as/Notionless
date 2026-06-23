@@ -3,8 +3,8 @@ import { Cover } from "./Cover";
 import { Spacer } from "./Spacer";
 import { Title } from "./Title";
 import { nanoid } from "nanoid";
-import {BasicNode} from "../Node/BasicNode.tsx";
 import {useAppState} from "../state/AppStateContext.tsx";
+import {NodeTypeSwitcher} from "../Node/NodeTypeSwitcher.tsx";
 
 export const Page = () => {
     const {title, nodes, addNode, setTitle} = useAppState();
@@ -16,7 +16,7 @@ export const Page = () => {
             <div>
                 <Title title={title} changePageTitle={setTitle} addNode={addNode} />
                 {nodes.map((node, index) => (
-                    <BasicNode
+                    <NodeTypeSwitcher
                         key={node.id}
                         node={node}
                         isFocused={focusedNodeIndex === index}

@@ -5,15 +5,15 @@ export const usePageState = (initialState: Page) => {
     const [page, setPage] = useImmer<Page>(initialState);
 
     const addNode = (node: NodeData, index: number) => {
-        setPage((draft) => draft.nodes.splice(index, 0, node));
+        setPage((draft) => { draft.nodes.splice(index, 0, node); });
     };
 
     const removeNodeByIndex = (index: number) => {
-        setPage((draft) => draft.nodes.splice(index, 1));
+        setPage((draft) => { draft.nodes.splice(index, 1); });
     }
 
     const changeNodeValue = (index: number, value: string) => {
-        setPage((draft) => draft.nodes[index].value = value);
+        setPage((draft) => { draft.nodes[index].value = value; });
     }
 
     const changeNodeType = (index: number, type: NodeType) => {
@@ -24,15 +24,15 @@ export const usePageState = (initialState: Page) => {
     }
 
     const setNodes = (nodes: NodeData[]) => {
-        setPage((draft) => draft.nodes = nodes);
+        setPage((draft) => { draft.nodes = nodes; });
     }
 
     const setTitle = (title: string) => {
-        setPage((draft) => draft.title = title);
+        setPage((draft) => { draft.title = title; });
     }
 
     const setCoverImage = (cover: string) => {
-        setPage((draft) => draft.cover = cover);
+        setPage((draft) => { draft.cover = cover; });
     }
 
     return {

@@ -1,4 +1,4 @@
-import type {NodeData} from "../utils/types";
+import type {NodeData, NodeType} from "../utils/types";
 import styles from "./Node.module.css";
 import {
     useEffect,
@@ -8,6 +8,8 @@ import {
 } from "react";
 import { nanoid } from "nanoid";
 import {useAppState} from "../state/AppStateContext.tsx";
+import {CommandPanel} from "./CommandPanel.tsx";
+import cx from "classnames";
 
 type BasicNodeProps = {
     node: NodeData;
@@ -23,8 +25,9 @@ export const BasicNode = ({
                               index,
                           }: BasicNodeProps) => {
     const nodeRef = useRef<HTMLDivElement>(null);
+    const showCommandPanel = isFocused && node?.value?.match(/^\//);
 
-    const { changeNodeValue, removeNodeByIndex, addNode } = useAppState();
+    const { changeNodeValue, removeNodeByIndex, addNode, changeNodeType } = useAppState();
 
     useEffect(() => {
         if (isFocused) {
@@ -45,6 +48,13 @@ export const BasicNode = ({
         changeNodeValue(index, textContent);
     }
 
+    const parseCommand = (nodeType: NodeType) => {
+        if (nodeRef.current) {
+            changeNodeType(index, nodeType);
+            nodeRef.current.textContent = "";
+        }
+    };
+
     const handleClick = () => {
         updateFocusedIndex(index);
     }
@@ -56,12 +66,23 @@ export const BasicNode = ({
             if (target.textContent?.[0] === "/") {
                 return;
             }
+            if (node.type === "list" && target.textContent?.length === 0) {
+                changeNodeType(index, "text");
+                return;
+            }
             addNode({type: node.type, id: nanoid(), value: ""}, index + 1);
             updateFocusedIndex(index + 1);
+        }
+        if (event.key === "Tab") {
+            event.preventDefault();
         }
         if (event.key === "Backspace") {
             if (target.textContent?.length === 0) {
                 event.preventDefault();
+                if (node.type === "list") {
+                    changeNodeType(index, "text");
+                    return;
+                }
                 removeNodeByIndex(index);
                 updateFocusedIndex(index - 1);
             } else if (window?.getSelection()?.anchorOffset === 0) {
@@ -72,13 +93,20 @@ export const BasicNode = ({
         }
     }
 
-    return <div
-        ref={nodeRef}
-        contentEditable
-        suppressContentEditableWarning
-        onInput={handleInput}
-        onClick={handleClick}
-        onKeyDown={onKeyDown}
-        className={styles.node}
-    />
+    return (
+        <div style={{ position: "relative" }}>
+            {showCommandPanel && (
+                <CommandPanel selectItem={parseCommand} nodeText={node.value} />
+            )}
+            <div
+                onInput={handleInput}
+                onClick={handleClick}
+                onKeyDown={onKeyDown}
+                ref={nodeRef}
+                contentEditable
+                suppressContentEditableWarning
+                className={cx(styles.node, styles[node.type])}
+            />
+        </div>
+    );
 };
