@@ -7,27 +7,24 @@ import {
     type KeyboardEventHandler,
 } from "react";
 import { nanoid } from "nanoid";
+import {useAppState} from "../state/AppStateContext.tsx";
 
 type BasicNodeProps = {
     node: NodeData;
     updateFocusedIndex(index: number): void;
     isFocused: boolean;
     index: number;
-    addNode(node: NodeData, index: number): void;
-    removeNodeByIndex(index: number): void;
-    changeNodeValue(index: number, valude: string): void;
 };
 
 export const BasicNode = ({
                               node,
                               updateFocusedIndex,
-                              changeNodeValue,
-                              addNode,
-                              removeNodeByIndex,
                               isFocused,
                               index,
                           }: BasicNodeProps) => {
     const nodeRef = useRef<HTMLDivElement>(null);
+
+    const { changeNodeValue, removeNodeByIndex, addNode } = useAppState();
 
     useEffect(() => {
         if (isFocused) {
