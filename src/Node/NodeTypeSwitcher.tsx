@@ -1,5 +1,7 @@
 import type {NodeType, NodeData} from "../utils/types";
 import { BasicNode } from "./BasicNode"
+import {PageNode} from "./PageNode.tsx";
+import {ImageNode} from "./ImageNode.tsx";
 
 type NodeTypeSwitcherProps = {
     node: NodeData;
@@ -27,13 +29,13 @@ export const NodeTypeSwitcher = ({
         />
     }
 
-/*    if(node.type == "page"){
+   if(node.type === "page"){
         return <PageNode node={node} index={index} isFocused={isFocused} />
     }
 
-    if(node.type === "image") {
-        return <ImageNode node={node} index={index} isFocused={isFocused} />
-    }*/
+   if(node.type === "image") {
+       return <ImageNode node={node} index={index} isFocused={isFocused} updateFocusedIndex={updateFocusedIndex} />
+   }
 
     return null
 }

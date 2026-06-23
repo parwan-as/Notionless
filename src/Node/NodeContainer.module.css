@@ -9,6 +9,11 @@
     width: 100%;
 }
 
+.nodeWrapper {
+    flex: 1;
+    min-width: 0;
+}
+
 .dragHandle {
     padding: 6px;
     cursor: grab;

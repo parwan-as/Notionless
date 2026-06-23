@@ -34,12 +34,14 @@ export const NodeContainer = ({
             <div {...listeners} className={styles.dragHandle}>
                 ⠿
             </div>
-            <NodeTypeSwitcher
-                node={node}
-                index={index}
-                isFocused={isFocused}
-                updateFocusedIndex={updateFocusedIndex}
-            />
+            <div className={styles.nodeWrapper}>
+                <NodeTypeSwitcher
+                    node={node}
+                    index={index}
+                    isFocused={isFocused}
+                    updateFocusedIndex={updateFocusedIndex}
+                />
+            </div>
         </div>
     );
 };

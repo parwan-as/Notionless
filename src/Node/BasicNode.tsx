@@ -94,7 +94,7 @@ export const BasicNode = ({
     }
 
     return (
-        <div style={{ position: "relative" }}>
+        <div className={styles.nodeCommandWrapper}>
             {showCommandPanel && (
                 <CommandPanel selectItem={parseCommand} nodeText={node.value} />
             )}
