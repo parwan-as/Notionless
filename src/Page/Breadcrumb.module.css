@@ -34,3 +34,20 @@
     color: var(--text-h);
     font-weight: 500;
 }
+
+.logout {
+    margin-left: auto;
+    background: none;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    color: var(--text);
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.logout:hover {
+    background-color: var(--accent-bg);
+    color: var(--accent);
+    border-color: var(--accent-border);
+}
