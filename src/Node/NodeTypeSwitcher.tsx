@@ -30,7 +30,7 @@ export const NodeTypeSwitcher = ({
     }
 
    if(node.type === "page"){
-        return <PageNode node={node} index={index} isFocused={isFocused} />
+        return <PageNode node={node} index={index} isFocused={isFocused} updateFocusedIndex={updateFocusedIndex} />
     }
 
    if(node.type === "image") {

@@ -2,6 +2,7 @@ import { useFocusedNodeIndex } from "./useFocusedNodeIndex";
 import { Cover } from "./Cover";
 import { Spacer } from "./Spacer";
 import { Title } from "./Title";
+import { Breadcrumb } from "./Breadcrumb";
 import { nanoid } from "nanoid";
 import {useAppState} from "../state/AppStateContext.tsx";
 import {DndContext, type DragEndEvent, DragOverlay} from "@dnd-kit/core";
@@ -23,6 +24,7 @@ export const Page = () => {
         <>
             <Cover filePath={cover} changePageCover={setCoverImage}/>
             <div>
+                <Breadcrumb title={title} />
                 <Title title={title} changePageTitle={setTitle} addNode={addNode} />
                 <DndContext onDragEnd={handleDragEvent}>
                     <SortableContext items={nodes} strategy={verticalListSortingStrategy}>

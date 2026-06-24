@@ -8,10 +8,49 @@
 .page {
     cursor: pointer;
     font-weight: bold;
+    color: var(--text-h);
+    background: transparent;
+    border: none;
+    outline: none;
+    font-family: inherit;
+    font-size: inherit;
 }
 
-.page:hover {
-    background-color: #f0f0f0;
+.pageLink {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: default;
+}
+
+.pageLink:hover {
+    background-color: var(--accent-bg);
+}
+
+.pageLink span {
+    cursor: pointer;
+    flex: 1;
+}
+
+.pageDelete {
+    opacity: 0;
+    transition: opacity 0.2s ease-in-out;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--text);
+    font-size: 12px;
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+.pageDelete:hover {
+    color: var(--text-h);
+    background-color: var(--accent-bg);
+}
+
+.pageLink:hover .pageDelete {
+    opacity: 1;
 }
 
 .list {
