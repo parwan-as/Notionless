@@ -1,75 +1,119 @@
-# React + TypeScript + Vite
+# Notionless
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A Notion-style block editor built with React and TypeScript. Documents are made of composable blocks (text, headings, lists, images, and links to nested pages) with drag-and-drop reordering, a slash command palette, passwordless auth, and persistence to Supabase.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- Block-based editor where each line can be turned into text, headings (H1-H3), bulleted lists, images, or sub-page links
+- Slash command palette: type `/` to open a keyboard-navigable menu (arrow keys to move, Enter to select) for changing block types
+- `contentEditable` editing with caret-aware handling for Enter, Backspace, and Tab using the DOM selection API
+- Drag-and-drop block reordering with [@dnd-kit](https://dndkit.com/)
+- Nested pages: create linked sub-pages, navigate them through a breadcrumb, and delete them with confirmation
+- Image uploads for covers and inline images via Supabase Storage, cleaned up on delete
+- Magic-link sign-in with Supabase Auth, protected routes, and session-aware redirects
+- Autosave that syncs to Supabase 500ms after you stop typing
+- Light and dark mode driven by CSS custom properties that follow the system preference
 
-## React Compiler
+## Tech stack
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
+| Area | Choice |
+| --- | --- |
+| Framework | React 19 + TypeScript |
+| Build tool | Vite (React Compiler enabled) |
+| Backend | Supabase (Postgres, Auth, Storage, Row-Level Security) |
+| Routing | React Router |
+| State | use-immer for immutable updates, React Context for app state |
+| Drag & drop | @dnd-kit/core + @dnd-kit/sortable |
+| Styling | CSS Modules + CSS custom properties |
+| Testing | Vitest + Testing Library + jsdom |
 
-Note: This will impact Vite dev & build performances.
+## Notes on the architecture
 
-## Expanding the ESLint configuration
+- `withInitialState` is a HOC that fetches a page (or scaffolds the start page) by slug before mounting the editor, keeping data loading out of the view layer.
+- `useSyncedState` wraps `useImmer` and fires a debounced sync callback on every change, separating local editing from network persistence.
+- `NodeTypeSwitcher` is the single place that renders the right block component (`BasicNode`, `PageNode`, `ImageNode`) for each node type.
+- The auth context object, provider, and hook live in separate files so Vite fast refresh and the ESLint rules stay happy.
+- Pages and storage objects are scoped to their owner (`auth.uid() = created_by`) through Row-Level Security, enforced in the database.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Getting started
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+### Prerequisites
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+- Node.js 20+
+- A [Supabase](https://supabase.com/) project
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### 1. Install
+
+```bash
+npm install
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### 2. Configure environment
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+Create a `.env` file in the project root:
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+VITE_SUPABASE_URL=https://your-project.supabase.co
+VITE_SUPABASE_API_KEY=your-anon-key
 ```
+
+### 3. Set up Supabase
+
+Create a `pages` table:
+
+| column | type | notes |
+| --- | --- | --- |
+| `id` | `uuid` | primary key, default `gen_random_uuid()` |
+| `slug` | `text` | unique |
+| `title` | `text` | |
+| `cover` | `text` | |
+| `nodes` | `jsonb` | |
+| `created_by` | `uuid` | references `auth.users` |
+
+Enable Row-Level Security and add a policy so users only access their own rows:
+
+```sql
+ALTER TABLE public.pages ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Users manage their own pages"
+ON public.pages
+FOR ALL
+TO authenticated
+USING (auth.uid() = created_by)
+WITH CHECK (auth.uid() = created_by);
+```
+
+Create a Storage bucket named `notionless`, and add `SELECT`, `INSERT`, and `DELETE` policies on it scoped to authenticated users.
+
+Under Authentication > URL Configuration, set the Site URL and add your local dev URL (for example `http://localhost:5173/**`) to the redirect allowlist so magic links work locally.
+
+### 4. Run
+
+```bash
+npm run dev
+```
+
+## Scripts
+
+| Command | Description |
+| --- | --- |
+| `npm run dev` | Start the Vite dev server |
+| `npm run build` | Type-check and build for production |
+| `npm run preview` | Preview the production build |
+| `npm run lint` | Run ESLint |
+
+## Project structure
+
+```
+src/
+├── Node/        Block components (text, list, image, page link) + command palette
+├── Page/        Page shell: cover, title, breadcrumb, spacer
+├── auth/        Magic-link auth, session context, protected routes
+├── state/       App state context, page state, synced/persisted state hooks
+├── components/  Shared UI (image loader, spinner)
+└── utils/       Supabase helpers, debounce, types
+```
+
+## License
+
+MIT
