@@ -38,6 +38,13 @@ export const BasicNode = ({
     }, [isFocused]);
 
     useEffect(() => {
+        if (nodeRef.current) {
+            nodeRef.current.textContent = node.value;
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    useEffect(() => {
         if (nodeRef.current && !isFocused) {
             nodeRef.current.textContent = node.value;
         }

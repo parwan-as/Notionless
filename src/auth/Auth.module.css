@@ -1,0 +1,109 @@
+.wrapper {
+    width: 100%;
+    min-height: 100svh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 24px;
+    box-sizing: border-box;
+}
+
+.card {
+    width: 100%;
+    max-width: 400px;
+    padding: 40px 32px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--bg);
+    box-shadow: var(--shadow);
+    text-align: center;
+}
+
+.logo {
+    font-size: 40px;
+    margin-bottom: 8px;
+}
+
+.title {
+    font-size: 28px;
+    font-weight: 600;
+    color: var(--text-h);
+    margin: 0 0 8px;
+}
+
+.subtitle {
+    font-size: 15px;
+    color: var(--text);
+    margin: 0 0 28px;
+    line-height: 145%;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    text-align: left;
+}
+
+.label {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-h);
+}
+
+.input {
+    width: 100%;
+    padding: 12px 14px;
+    font-size: 15px;
+    font-family: inherit;
+    color: var(--text-h);
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    outline: none;
+    box-sizing: border-box;
+    transition: border-color 0.15s ease;
+}
+
+.input:focus {
+    border-color: var(--accent);
+}
+
+.button {
+    margin-top: 4px;
+    padding: 12px 14px;
+    font-size: 15px;
+    font-weight: 600;
+    font-family: inherit;
+    color: #fff;
+    background: var(--accent);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: opacity 0.15s ease;
+}
+
+.button:hover {
+    opacity: 0.9;
+}
+
+.button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.sent {
+    padding: 16px;
+    border-radius: 8px;
+    background: var(--accent-bg);
+    border: 1px solid var(--accent-border);
+    color: var(--text-h);
+    font-size: 15px;
+    line-height: 145%;
+}
+
+.error {
+    color: #e5484d;
+    font-size: 13px;
+    margin: 0;
+}

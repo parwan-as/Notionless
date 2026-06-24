@@ -11,11 +11,17 @@ export const AuthSessionProvider = ({ children }: AuthSessionProviderProps) => {
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
-        supabase.auth.getSession().then(({ data, error }) => {
-            if (error) console.log(error)
-            setSession(data.session)
-            setLoading(false)
-        })
+        const hasAuthInUrl =
+            window.location.hash.includes("access_token") ||
+            window.location.search.includes("code=")
+
+        if (!hasAuthInUrl) {
+            supabase.auth.getSession().then(({ data, error }) => {
+                if (error) console.log(error)
+                setSession(data.session)
+                setLoading(false)
+            })
+        }
 
         const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
             setSession(session)
